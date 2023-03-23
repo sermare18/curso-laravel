@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,3 +23,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+// Devuelve la vista de contact.blade.php
+Route::get('/contact', fn () => Response::view('contact'));
+
+Route::post('/contact', function(Request $request){
+    // Dump and die
+    dd($request);
+});
