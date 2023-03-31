@@ -8,7 +8,7 @@
           <div class="card-header">Create New Contact</div>
 
           <div class="card-body">
-            <form method="POST" action="/contact">
+            <form method="POST" action="{{ route('contacts.store') }}">  {{-- esto especifica la URL a la que se enviará el formulario cuando se envíe. En este caso, se utiliza la función route de Laravel para generar la URL a partir de un nombre de ruta. El nombre de ruta utilizado es 'contacts.store', lo que significa que el formulario se enviará a la ruta definida en la función store del controlador ContactController. --}}
               @csrf
               <div class="row mb-3">
                 <label for="name"
@@ -23,7 +23,7 @@
               </div>
 
               <div class="row mb-3">
-                <label for="email"
+                <label for="phone_number"
                   class="col-md-4 col-form-label text-md-end">Phone Number</label>
 
                 <div class="col-md-6">
