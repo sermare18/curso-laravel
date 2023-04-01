@@ -8,17 +8,23 @@
           <div class="card-header">Create New Contact</div>
 
           <div class="card-body">
-            <form method="POST" action="{{ route('contacts.store') }}">  {{-- esto especifica la URL a la que se enviará el formulario cuando se envíe. En este caso, se utiliza la función route de Laravel para generar la URL a partir de un nombre de ruta. El nombre de ruta utilizado es 'contacts.store', lo que significa que el formulario se enviará a la ruta definida en la función store del controlador ContactController. --}}
+            <form method="POST" action="{{ route('contacts.store') }}">
+              {{-- esto especifica la URL a la que se enviará el formulario cuando se envíe. En este caso, se utiliza la función route de Laravel para generar la URL a partir de un nombre de ruta. El nombre de ruta utilizado es 'contacts.store', lo que significa que el formulario se enviará a la ruta definida en la función store del controlador ContactController. --}}
               @csrf
               <div class="row mb-3">
                 <label for="name"
                   class="col-md-4 col-form-label text-md-end">Name</label>
 
                 <div class="col-md-6">
-                  <input id="name" type="text"
-                    class="form-control"
-                    name="name" required
-                    autocomplete="name" autofocus>
+                  <input id="name" type="text" class="form-control @error('name') is-invalid @enderror"
+                    name="name" autocomplete="name" autofocus>
+
+                    {{-- Error definido en ContactController, en la función store --}} {{-- Con esto consegimos sacar de la sesion los errores, es decir mostramos en el frontend los errores almacenados en el backend --}}
+                    @error('name')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
                 </div>
               </div>
 
@@ -27,10 +33,8 @@
                   class="col-md-4 col-form-label text-md-end">Phone Number</label>
 
                 <div class="col-md-6">
-                  <input id="phone_number" type=tel"
-                    class="form-control"
-                    name="phone_number" required
-                    autocomplete="phone_number">
+                  <input id="phone_number" type=tel" class="form-control"
+                    name="phone_number" required autocomplete="phone_number">
                 </div>
               </div>
 

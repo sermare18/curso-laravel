@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 
 class ContactController extends Controller
 { // Aquí es donde se va a implementar la lógica para el modelo Eloquent de Contact, se corresponde con controller en MVC
@@ -36,8 +38,19 @@ class ContactController extends Controller
      */
     public function store(Request $request)
     {
-        //Almacenamos el nuevo contacto en la base de datos, no hacerlo así nunca
-        Contact::create($request->all());
+        //Almacenamos el nuevo contacto en la base de datos
+        if (is_null($request->get('name'))){
+            // LARAVEL ES MUY EXPRESIVO, una misma cosa se puede hacer de muchas formas
+            // Redirigimos a la vista de crear contacto y metemos en la sesión los errores
+            // Equivalente con 'funciones helper' a return response()->redirectTo('contacts/create')->withErrors
+            // También equivalente con 'funciones helper' a return redirect('contacts/create')->withErrors
+            // O accediendo a la ruta con el nombre de ruta return redirect(route('contacts.create'))->withErrors
+            // Otra opción para volver atrás sin poner rutas: return redirect()->back()->withErrors
+            // O return back()->withErrors
+            return FacadesResponse::redirectTo('contacts/create')->withErrors([
+                'name' => 'This field is required', // Este es el mensaje donde se guarda la información del error y lo podemos extraer en el frontend a través de la variable $message
+            ]);
+        }
 
         return response("Contact created");
     }
