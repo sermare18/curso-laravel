@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response as HttpResponse;
@@ -26,7 +27,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // // Devuelve la vista de contact.blade.php
 // Route::get('/contact', fn () => Response::view('contact'));

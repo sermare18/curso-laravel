@@ -54,7 +54,7 @@ class ContactController extends Controller
         // }
 
         // Aquí vamos a validar desde blade (No desde el navegador) que luego se compila a php (storage/views) los datos que recibimos del formulario
-        $request->validate([
+        $data = $request->validate([
             // Con esto conseguimos validar los datos y si hay errores volver atrás y enviar un mensaje de error automático
             'name' => 'required',
             'email' => 'required|email',
@@ -62,7 +62,12 @@ class ContactController extends Controller
             'age' => ['required', 'numeric', 'min:1', 'max:255'],
         ]);
 
-        return response("Contact created");
+        // Este método estático create de la clase Contact que hereda de Model también previene de las inyecciones SQL
+        // Aqui se almacena el contacto en la base de datos
+        Contact::create($data);
+
+        // Si hemos conseguido almacenar el contacto en la base de datos, devolvemos el usuario a la vista de home, donde puede ver todos sus contactos
+        return redirect()->route('home');
     }
 
     /**

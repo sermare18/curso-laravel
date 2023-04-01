@@ -13,7 +13,7 @@ class Contact extends Model
     use HasFactory;
 
     // Para indicarle que campos del objeto tiene que rellenar en la db sin que introduzca todos
-    // Esto significa que cuando se utiliza el método create o fill en un objeto de la clase Contact,
+    // Esto significa que cuando se utiliza el método create o fill en un objeto de la clase Contact (En el controlador de Contact),
     // se pueden establecer los valores de estos campos utilizando un arreglo asociativo.
     protected $fillable = [
         "name",
