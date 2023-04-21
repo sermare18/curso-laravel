@@ -26,8 +26,9 @@ class ContactController extends Controller
      */
     public function create()
     {
-        // Devolvemos la vista de contacto
-        return view('contact');
+        // Devolvemos la vista de crear contacto
+        // La vista de crear contacto se encuentra dentro de la carpeta views en la subcarpeta contacts, aqui esta el fichero create.blade.php
+        return view('contacts.create');
     }
 
     /**
@@ -89,7 +90,11 @@ class ContactController extends Controller
      */
     public function edit(Contact $contact)
     {
-        //
+        // dd(request()->route('contact')); // imprimirá información sobre la ruta que coincida con el parámetro "contact" en la solicitud actual. Ver el parametro {contact} en web.php
+        // Si no encuentra el contacto en la db automáticamente manda un 404
+        // $contact = Contact::findOrFail($contactId); // Esto lo hace automáticamente laravel con los parámetros de entrada de esta función (Esto se llama inyección de dependencias)
+
+        return view('contacts.edit', ['contact' => $contact]);
     }
 
     /**
@@ -101,7 +106,17 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
-        //
+        $data = $request->validate([
+            // Con esto conseguimos validar los datos y si hay errores volver atrás y enviar un mensaje de error automático
+            'name' => 'required',
+            'email' => 'required|email',
+            'phone_number' => ['required', 'digits:9'],
+            'age' => ['required', 'numeric', 'min:1', 'max:255'],
+        ]);
+
+        $contact->update($data);
+
+        return redirect()->route('home');
     }
 
     /**
