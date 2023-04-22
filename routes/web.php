@@ -16,9 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Si estamos autentificados redirigimos a home en caso contrario devolvemos la vista de welcome
+Route::get('/', fn() => auth()->check() ? redirect('/home') : view('welcome'));
 
 Auth::routes();
 
@@ -51,10 +50,14 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Siguiendo los estándares de la documentación oficial de laravel
 // La lógica ya no es ruta - función, sino, ruta - controlador - función
-Route::get('/contacts/create', [ContactController::class, 'create'])->name('contacts.create'); //Ya no nos hace falta poner /contacts/create, sino que únicamente ponemos el nombre de ruta 'contacts.create'
-Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store'); // name() -> esto asigna un nombre a la ruta. En este caso, el nombre de la ruta es 'contacts.store'. Este nombre se utiliza para generar URL y redireccionamientos en Laravel. Lo utilizamos en la vista contact en el campo action del formulario despues de un POST
-Route::get('/contacts/{contact}/', [ContactController::class, 'show'])->name('contacts.show');
-Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit'); 
-Route::put('/contacts/{contact}/', [ContactController::class, 'update'])->name('contacts.update');  
-Route::delete('/contacts/{contact}/', [ContactController::class, 'destroy'])->name('contacts.destroy'); 
+// Route::get('/contacts/create', [ContactController::class, 'create'])->name('contacts.create'); //Ya no nos hace falta poner /contacts/create, sino que únicamente ponemos el nombre de ruta 'contacts.create'
+// Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store'); // name() -> esto asigna un nombre a la ruta. En este caso, el nombre de la ruta es 'contacts.store'. Este nombre se utiliza para generar URL y redireccionamientos en Laravel. Lo utilizamos en la vista contact en el campo action del formulario despues de un POST
+// Route::get('/contacts/{contact}/', [ContactController::class, 'show'])->name('contacts.show');
+// Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit'); 
+// Route::put('/contacts/{contact}/', [ContactController::class, 'update'])->name('contacts.update');  
+// Route::delete('/contacts/{contact}/', [ContactController::class, 'destroy'])->name('contacts.destroy');
+// Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
+
+// Con esta única línea de código se generan todas las rutas que hemos definido arriba si y solo si queremos ceñirnos a la convección de rutas de Laravel (Ver documentación)
+Route::resource('contacts', ContactController::class);
 

@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Response as FacadesResponse;
 
 class ContactController extends Controller
 { // Aquí es donde se va a implementar la lógica para el modelo Eloquent de Contact, se corresponde con controller en MVC
@@ -16,7 +14,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        //
+        // Retornamos vista del index y le pasamos como parámetro una lista con todos los contactos que la sacamos de la db, esta lista $contacts es llamada desde la vista index
+        return view('contacts.index', ['contacts' => Contact::all()]);
     }
 
     /**
