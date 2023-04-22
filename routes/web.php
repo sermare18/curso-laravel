@@ -55,4 +55,5 @@ Route::get('/contacts/create', [ContactController::class, 'create'])->name('cont
 Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name('contacts.edit'); 
 Route::put('/contacts/{contact}/edit', [ContactController::class, 'update'])->name('contacts.update'); 
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store'); // name() -> esto asigna un nombre a la ruta. En este caso, el nombre de la ruta es 'contacts.store'. Este nombre se utiliza para generar URL y redireccionamientos en Laravel. Lo utilizamos en la vista contact en el campo action del formulario despues de un POST
+Route::delete('/contacts/{contact}/', [ContactController::class, 'destroy'])->name('contacts.destroy'); 
 
