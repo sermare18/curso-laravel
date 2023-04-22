@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -41,4 +42,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // Definimos la cardinalidad de la relación entre Usuario y Contacto (uno a muchos)
+    // Esta función es usada en el método index de ContactController
+    public function contacts(): HasMany
+    {
+        // Este modelo 'Usuario' tiene muchos objetos del modelo 'Contact'
+        // Laravel deduce automáticamente cual es la clave foranea en la tabla contacts, asume que es user + _id, por eso es muy importante tener en cuenta la nomenclatura de Laravel
+        return $this->hasMany(Contact::class);
+    }
 }

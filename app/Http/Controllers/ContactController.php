@@ -14,8 +14,13 @@ class ContactController extends Controller
      */
     public function index()
     {
+        //$contacts = Contact::query()->where('user_id', '=', auth()->id())->get();
+        // Otra forma: llamamos al método contacts que hemos creado en el modelo User. (Parece que da error, pero en realidad está bien)
+        $contacts = auth()->user()->contacts()->get();
+        // La línea de arriba es equivalente a $contacts = auth()->user()->contacts; 
+
         // Retornamos vista del index y le pasamos como parámetro una lista con todos los contactos que la sacamos de la db, esta lista $contacts es llamada desde la vista index
-        return view('contacts.index', ['contacts' => Contact::all()]);
+        return view('contacts.index', compact('contacts')); // compact('contacts') crea un array asociativo con nombre 'contacts' y contenido el contenido de la variable $contacts
     }
 
     /**
@@ -62,9 +67,14 @@ class ContactController extends Controller
             'age' => ['required', 'numeric', 'min:1', 'max:255'],
         ]);
 
+        // Guardamos en data el id del usuario autentificado que va a crear su contacto, con auth()->id() obtiene el ID del usuario autenticado actualmente a través de los datos de sesión.
+        $data['user_id'] = auth()->id();
+
         // Este método estático create de la clase Contact que hereda de Model también previene de las inyecciones SQL
         // Aqui se almacena el contacto en la base de datos
         Contact::create($data);
+
+        // Otra posibilidad sin tener que incluir en $data el campo 'user_id' es: auth()->user()->contacts()->create($data)
 
         // Si hemos conseguido almacenar el contacto en la base de datos, devolvemos el usuario a la vista de home, donde puede ver todos sus contactos
         return redirect()->route('home');
