@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Gate;
 
 class ContactController extends Controller
 { // Aquí es donde se va a implementar la lógica para el modelo Eloquent de Contact, se corresponde con controller en MVC
@@ -88,6 +90,20 @@ class ContactController extends Controller
      */
     public function show(Contact $contact)
     {
+        // Forma de más bajo nivel
+        // abort_if($contact->user_id !== auth()->id(), 403);
+
+        // Con gates (Puertas), implementando el método boot de app/Providers/AuthServiceProvider
+        // if (! Gate::allows('show-contact', $contact)) {
+        //     abort(403);
+        // }
+        // Otra forma oneline sería:
+        // Gate::authorize('show-contact', $contact);
+
+        // Tercera forma con politicas de modelos (app/Policies/ContactPolicy, esta política ha sido creada con el comando Php artisan make:policy ContactPolicy —model Contact)
+        // De esta forma vamos a app/Providers/AuthServiceProvider y el metodo boot ejecuta: $this->registerPolicies();, que encontrará la politica que hemos creado
+        $this->authorize('view', $contact);
+
         return view('contacts.show', compact('contact')); // Lo mismo que return view('contacts.show', ['contact' => $contact]);
     }
 
@@ -103,6 +119,8 @@ class ContactController extends Controller
         // Si no encuentra el contacto en la db automáticamente manda un 404
         // $contact = Contact::findOrFail($contactId); // Esto lo hace automáticamente laravel con los parámetros de entrada de esta función (Esto se llama inyección de dependencias)
 
+        $this->authorize('update', $contact);
+
         return view('contacts.edit', ['contact' => $contact]);
     }
 
@@ -115,6 +133,8 @@ class ContactController extends Controller
      */
     public function update(Request $request, Contact $contact)
     {
+        $this->authorize('update', $contact);
+        
         $data = $request->validate([
             // Con esto conseguimos validar los datos y si hay errores volver atrás y enviar un mensaje de error automático
             'name' => 'required',
@@ -136,6 +156,8 @@ class ContactController extends Controller
      */
     public function destroy(Contact $contact)
     {
+        $this->authorize('delete', $contact);
+        
         $contact->delete();
 
         return redirect()->route('home');
