@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreContactRequest;
+use App\Http\Requests\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -43,7 +45,7 @@ class ContactController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreContactRequest $request)
     {
         //Almacenamos el nuevo contacto en la base de datos
 
@@ -61,13 +63,8 @@ class ContactController extends Controller
         // }
 
         // Aquí vamos a validar desde blade (No desde el navegador) que luego se compila a php (storage/views) los datos que recibimos del formulario
-        $data = $request->validate([
-            // Con esto conseguimos validar los datos y si hay errores volver atrás y enviar un mensaje de error automático
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone_number' => ['required', 'digits:9'],
-            'age' => ['required', 'numeric', 'min:1', 'max:255'],
-        ]);
+        // Reglas de validación definidas en app/Requests/StoreContactRequest
+        $data = $request->validated();
 
         // Guardamos en data el id del usuario autentificado que va a crear su contacto, con auth()->id() obtiene el ID del usuario autenticado actualmente a través de los datos de sesión.
         $data['user_id'] = auth()->id();
@@ -131,17 +128,11 @@ class ContactController extends Controller
      * @param  \App\Models\Contact  $contact
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Contact $contact)
+    public function update(UpdateContactRequest $request, Contact $contact)
     {
         $this->authorize('update', $contact);
         
-        $data = $request->validate([
-            // Con esto conseguimos validar los datos y si hay errores volver atrás y enviar un mensaje de error automático
-            'name' => 'required',
-            'email' => 'required|email',
-            'phone_number' => ['required', 'digits:9'],
-            'age' => ['required', 'numeric', 'min:1', 'max:255'],
-        ]);
+        $data = $request->validated();
 
         $contact->update($data);
 
