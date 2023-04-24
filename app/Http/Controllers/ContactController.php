@@ -71,12 +71,22 @@ class ContactController extends Controller
 
         // Este método estático create de la clase Contact que hereda de Model también previene de las inyecciones SQL
         // Aqui se almacena el contacto en la base de datos
-        Contact::create($data);
+        $contact = Contact::create($data);
 
         // Otra posibilidad sin tener que incluir en $data el campo 'user_id' es: auth()->user()->contacts()->create($data)
 
+        // Enviamos mensaje flash (Ver app.blade.php)
+        // En vez de put(), utilizamos el método flash() para que la información se mantenga únicamente en el siguiente request
+        // session()->flash('alert', [
+        //     'message' => "Contact $contact->name successfully saved",
+        //     'type' => 'success',
+        // ]);
+
         // Si hemos conseguido almacenar el contacto en la base de datos, devolvemos el usuario a la vista de home, donde puede ver todos sus contactos
-        return redirect()->route('home');
+        return redirect('home')->with('alert', [
+            'message' => "Contact $contact->name successfully saved",
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -136,7 +146,10 @@ class ContactController extends Controller
 
         $contact->update($data);
 
-        return redirect()->route('home');
+        return redirect('home')->with('alert', [
+            'message' => "Contact $contact->name successfully updated",
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -151,6 +164,9 @@ class ContactController extends Controller
         
         $contact->delete();
 
-        return redirect()->route('home');
+        return redirect('home')->with('alert', [
+            'message' => "Contact $contact->name successfully deleted",
+            'type' => 'danger',
+        ]);
     }
 }
