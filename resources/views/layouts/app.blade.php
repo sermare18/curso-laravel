@@ -109,6 +109,18 @@
         <x-alert :type="$alert['type']" :message="$alert['message']" />
       @endif
 
+      {{-- Comprobamos si la free trial del usuario ya ha vencido --}}
+      {{-- Para que muestre la alerta se deben de dar las condiciones de que no estes subscrito y estes aun en el periodo de prueba --}}
+      {{-- El operador ?-> es el operador de fusión de nulos en la llamada a un método. 
+      Este operador permite llamar a un método en un objeto si el objeto no es null. Si el objeto es null, 
+      la llamada al método se omite y se devuelve null en su lugar. Posteriormente null se evalua a false --}}
+      @if (!auth()->user()?->subscribed() && auth()->user()?->onTrial())
+        @php
+          $freeTrialRemainingDays = now()->diffInDays(auth()->user()->trial_ends_at);
+        @endphp
+        <x-alert type="info" message="Trial ends in {{ $freeTrialRemainingDays }} days" />
+      @endif
+
       @yield('content')
     </main>
   </div>

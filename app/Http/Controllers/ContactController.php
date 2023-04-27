@@ -111,6 +111,9 @@ class ContactController extends Controller
         // ]);
 
         // Si hemos conseguido almacenar el contacto en la base de datos, devolvemos el usuario a la vista de home, donde puede ver todos sus contactos
+        // Devuelve una alerta flash de una sola vez. El método with en la redirección almacena los datos en la 
+        // sesión para el siguiente request. Después de que el siguiente request se haya completado, los datos 
+        // se eliminarán automáticamente de la sesión
         return redirect('home')->with('alert', [
             'message' => "Contact $contact->name successfully saved",
             'type' => 'success',

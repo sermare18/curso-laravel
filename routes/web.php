@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn() => auth()->check() ? redirect('/home') : view('welcome'));
 
 Auth::routes();
+
+// Ruta que comprueba si tenemos una subscripción activa
+// config('stripe.price_id')) : Accedemos a config/stripe.php y obtenemos del array asociativo el valor de la clave 'price_id'
+// Que es el identidicador de la subscripción
+// Esto nos devuelve a una pagina de stripe donde podemos empezar a pagar por este producto
+Route::get('/checkout', function (Request $request) {
+    return $request->user()
+        ->newSubscription('default', config('stripe.price_id'))
+        ->checkout();
+});
+
+// Ruta al billing-portal de stripe (Donde se administran las subscripciones en curso)
+Route::get('/billing-portal', function (Request $request) {
+    return $request->user()->redirectToBillingPortal();
+});
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
