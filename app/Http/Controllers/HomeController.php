@@ -26,6 +26,6 @@ class HomeController extends Controller
     {
         // dd(Contact::all());
         // Retornamos vista de home y le pasamos como parámetro una lista con todos los contactos que pertenecen al usuario autentificado que la sacamos de la db, esta lista $contacts es llamada desde la vista home
-        return view('home', ['contacts' => auth()->user()->contacts()->get()]);
+        return view('home', ['contacts' => auth()->user()->contacts()->latest()->take(9)->get()]);
     }
 }

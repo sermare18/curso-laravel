@@ -21,7 +21,8 @@ class ContactController extends Controller
     {
         //$contacts = Contact::query()->where('user_id', '=', auth()->id())->get();
         // Otra forma: llamamos al método contacts que hemos creado en el modelo User. (Parece que da error, pero en realidad está bien)
-        $contacts = auth()->user()->contacts()->get();
+        // paginate(num_contactos_en_cada_pagina)
+        $contacts = auth()->user()->contacts()->orderBy('name', 'asc')->paginate(6);
         // La línea de arriba es equivalente a $contacts = auth()->user()->contacts; 
 
         // Retornamos vista del index y le pasamos como parámetro una lista con todos los contactos que la sacamos de la db, esta lista $contacts es llamada desde la vista index

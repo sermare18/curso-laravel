@@ -54,5 +54,9 @@
         </div>
       </div>
     @endforelse
+    {{-- En contact controller en el método index() que es el que utiliza esta vista hemos añadido el método
+    paginate(6), por lo tanto ahora $contacts es un objeto paginador al cual podemos llamar a su método
+    links para que nos proporcione el html necesario para moverse entre distintas páginas  de 6 contactos cada una--}}
+    {{ $contacts->links() }}
   </div>
 @endsection
