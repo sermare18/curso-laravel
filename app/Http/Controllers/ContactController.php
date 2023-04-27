@@ -8,6 +8,7 @@ use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
 { // Aquí es donde se va a implementar la lógica para el modelo Eloquent de Contact, se corresponde con controller en MVC
@@ -65,6 +66,32 @@ class ContactController extends Controller
         // Aquí vamos a validar desde blade (No desde el navegador) que luego se compila a php (storage/views) los datos que recibimos del formulario
         // Reglas de validación definidas en app/Requests/StoreContactRequest
         $data = $request->validated();
+
+        // Solo podemos ver desde el navegador el contenido que se encuentre en la carpeta public raíz, no la carpeta /storage/app/public
+        // Para poder ver las imagenes de los contactos debemos crear un enlace simbólico con el comando 'php artsian storage:link' que comunique la carpeta public/storage
+        // Con la carpeta storage/app/public
+
+        // Si no nos ha manddado una imagen ese campo se inicializa a null que se evalua como false en el if
+        if (request()->hasFile('profile_picture')) {
+            // Con store() guardamos la imagen en el "disco del servidor" en la carpeta storage/app/public/profiles, a la imagen le pone como nombre un hash
+            // Esto es porque todas las imagenes deben ser accesibles de forma pública para que el navegador las pueda cargar y renderizar
+            // En principio, de esta forma cualquier persona podría ver las imagenes de los contactos de otros usuarios pero para ello tendría 
+            // que adivinar el hash de la imagen cosa muy improbable. A esta ruta con el hash solo tienen acceso cada usuario de contactsApp desde la db
+            // Obtenemos la ruta (path) de la imagen de perfil del usuario y la guardamos dentro de la variable $path
+
+            // Si no queremos que los ficheros sean accesibles de forma publica quitamos el parámetro public del método store()
+            // Y estos ficheros solo podrán ser accedidos por la persona que tenga control sobre el servidor.
+            // Ya que por ejemplo estas ficheros (imagenes) se guardarían en storage/app/profiles que no esta enlazado con el enlace simbólico
+            // a public/storage.
+            $path = $request->file('profile_picture')->store('profiles', 'public');
+            // Almacenamos en la base de datos el path donde se encuentra la imagen
+            $data['profile_picture'] = $path;
+        }
+
+        // Para que nos devuelva la URL completa de cómo acceder desde el navegador a este archivo
+        // En este caso solo nos devuelve una uri porque no tiene protocolo, esto es debido a que estamos trabajando en local
+        // Esto se puede ver en el fichero .env en el campo FILESYSTEM_DISK=local
+        // dd(Storage::url($path));
 
         // Guardamos en data el id del usuario autentificado que va a crear su contacto, con auth()->id() obtiene el ID del usuario autenticado actualmente a través de los datos de sesión.
         $data['user_id'] = auth()->id();
@@ -141,8 +168,14 @@ class ContactController extends Controller
     public function update(UpdateContactRequest $request, Contact $contact)
     {
         $this->authorize('update', $contact);
-        
+
         $data = $request->validated();
+
+        if (request()->hasFile('profile_picture')) {
+
+            $path = $request->file('profile_picture')->store('profiles', 'public');
+            $data['profile_picture'] = $path;
+        }
 
         $contact->update($data);
 
@@ -161,7 +194,12 @@ class ContactController extends Controller
     public function destroy(Contact $contact)
     {
         $this->authorize('delete', $contact);
-        
+
+        // Eliminar la foto de perfil del contacto si no es la imagen por defecto
+        if ($contact->profile_picture != 'profiles/default.png') {
+            Storage::disk('public')->delete($contact->profile_picture);
+        }
+
         $contact->delete();
 
         return back()->with('alert', [

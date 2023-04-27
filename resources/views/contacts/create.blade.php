@@ -8,7 +8,12 @@
           <div class="card-header">Create New Contact</div>
 
           <div class="card-body">
-            <form method="POST" action="{{ route('contacts.store') }}">
+            {{-- El atributo enctype="multipart/form-data" en un elemento <form> especifica cómo se deben 
+            codificar los datos del formulario al enviarlos al servidor. Este valor se utiliza cuando se envían 
+            archivos a través de un formulario. Le indica al navegador que codifique los datos del formulario 
+            como una serie de partes, cada una con su propio encabezado Content-Type, lo que permite enviar 
+            archivos y otros datos no textuales junto con los datos del formulario. --}}
+            <form method="POST" action="{{ route('contacts.store') }}" enctype="multipart/form-data">
               {{-- esto especifica la URL a la que se enviará el formulario cuando se envíe. En este caso, se utiliza la función route de Laravel para generar la URL a partir de un nombre de ruta. El nombre de ruta utilizado es 'contacts.store', lo que significa que el formulario se enviará a la ruta definida en la función store del controlador ContactController. --}}
               @csrf
               <div class="row mb-3">
@@ -33,7 +38,7 @@
                   class="col-md-4 col-form-label text-md-end">Phone Number</label>
 
                 <div class="col-md-6">
-                  <input id="phone_number" type=tel" class="form-control @error('phone_number') is-invalid @enderror"
+                  <input id="phone_number" type="tel" class="form-control @error('phone_number') is-invalid @enderror"
                     name="phone_number" value="{{ old('phone_number') }}" autocomplete="phone_number">
 
                     @error('phone_number')
@@ -49,7 +54,7 @@
                   class="col-md-4 col-form-label text-md-end">Email</label>
 
                 <div class="col-md-6">
-                  <input id="email" type=text" class="form-control @error('email') is-invalid @enderror"
+                  <input id="email" type="text" class="form-control @error('email') is-invalid @enderror"
                     name="email" value="{{ old('email') }}" autocomplete="email">
 
                     @error('email')
@@ -65,10 +70,26 @@
                   class="col-md-4 col-form-label text-md-end">Age</label>
 
                 <div class="col-md-6">
-                  <input id="age" type=tel" class="form-control @error('age') is-invalid @enderror"
+                  <input id="age" type="text" class="form-control @error('age') is-invalid @enderror"
                     name="age" value="{{ old('age') }}" autocomplete="age">
 
                     @error('age')
+                      <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                      </span>
+                    @enderror
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <label for="age"
+                  class="col-md-4 col-form-label text-md-end">Profile Picture</label>
+
+                <div class="col-md-6">
+                  <input id="profile_picture" type="file" class="form-control @error('profile_picture') is-invalid @enderror"
+                    name="profile_picture">
+
+                    @error('profile_picture')
                       <span class="invalid-feedback" role="alert">
                           <strong>{{ $message }}</strong>
                       </span>

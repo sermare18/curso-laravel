@@ -7,7 +7,9 @@
         <div>
           {{-- Imagen --}}
           <a href="{{ route('contacts.show', $contact->id) }}">
-            <img src="/img/logo.png" style="width: 20px;">
+            {{-- Accedemos a storage/app/public para sacar la url que nos permita visualizar en el navegador la imagen del contacto --}}
+            {{-- el método route() se usa para generar URLs para rutas con nombre en tu aplicación Laravel. Si lo que quieres es generar la URL para una imagen almacenada en el disco del servidor, deberías usar el método url() de la clase Storage --}}
+            <img class="profile_picture" src="{{ Storage::url($contact->profile_picture) }}">
           </a>
         </div>
         <div class="d-flex align-items-center">

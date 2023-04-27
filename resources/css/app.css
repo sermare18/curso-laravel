@@ -7,3 +7,11 @@
     background-position: center center;
     background-size: cover;
 }
+
+/* La propiedad width especifica el ancho de un elemento y la propiedad height especifica su altura. En el código que proporcionaste, ambas propiedades se establecen en 4rem, lo que significa que el ancho y alto del elemento serán iguales a 4 veces el tamaño de fuente del elemento raíz (usualmente el elemento <html>). */
+.profile_picture {
+    border-radius: 50%; /* Para que toda la imagen de perfil sea un circulo */
+    width: 4rem; /* Relativo al tamaño de fuente, si cambia el tamaño de fuente también cambia el tamaño de la iamgen */
+    height: 4rem;
+}
+
