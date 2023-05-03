@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\ContactShareController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StripeController;
 use Illuminate\Http\Request;
@@ -41,7 +42,10 @@ Route::middleware(['auth','subscription'])->group(function(){
     // Añadimos el middleware de autentificación para que no seamos capaces de llegar hasta el controlador ContactController
     // sin antes estar autentificado
     // Los nombres de los middlewares estan registrados en app/Http/Kernel.php
-    Route::middleware(['auth', 'subscription'])->resource('contacts', ContactController::class);
+    Route::resource('contacts', ContactController::class);
+    // Con el except evitamos que nos cree rutas para las funciones que hemos quitado
+    Route::resource('contact-shares', ContactShareController::class)
+        ->except('show', 'edit', 'update');
 });
 
 // // Devuelve la vista de contact.blade.php

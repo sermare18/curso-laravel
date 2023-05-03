@@ -32,4 +32,11 @@ class Contact extends Model
             // contact::first()->user()->get()
         return $this->belongsTo(User::class);
     }
+
+    // Los usuarios con el que este contacto se ha compartido (muchos (Usarios) comparten muchos (Contactos))
+    // De esta forma sabemos dado un contacto, con quienes (Usuarios) está compartido
+    // Especificamos la tabla ya que no hemos seguido la convencción de laravel y la tabla en vez de llamarse contact_user la hemos llamado contact_shares
+    public function sharedWithUsers(){
+        return $this->belongsToMany(User::class, 'contact_shares');
+    }
 }

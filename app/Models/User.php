@@ -47,6 +47,7 @@ class User extends Authenticatable
         'trial_ends_at' => 'datetime',
     ];
 
+    // RELACIONES ELOQUENT
     // Definimos la cardinalidad de la relación entre Usuario y Contacto (uno a muchos)
     // Esta función es usada en el método index de ContactController
     public function contacts(): HasMany
@@ -54,5 +55,12 @@ class User extends Authenticatable
         // Este modelo 'Usuario' tiene muchos objetos del modelo 'Contact'
         // Laravel deduce automáticamente cual es la clave foranea en la tabla contacts, asume que es user + _id, por eso es muy importante tener en cuenta la nomenclatura de Laravel
         return $this->hasMany(Contact::class);
+    }
+
+    // Contactos que se han compartido con este usuario (muchos (Usarios) comparten muchos (Contactos))
+    // De esta forma sabemos dado un usuario, que contactos han sido compartidos con él
+    // Especificamos la tabla ya que no hemos seguido la convencción de laravel y la tabla en vez de llamarse contact_user la hemos llamado contact_shares
+    public function sharedContacts(){
+        return $this->belongsToMany(Contact::class, 'contact_shares');
     }
 }
