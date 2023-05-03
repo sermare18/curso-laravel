@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\StripeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -26,18 +27,22 @@ Auth::routes();
 // config('stripe.price_id')) : Accedemos a config/stripe.php y obtenemos del array asociativo el valor de la clave 'price_id'
 // Que es el identidicador de la subscripción
 // Esto nos devuelve a una pagina de stripe donde podemos empezar a pagar por este producto
-Route::get('/checkout', function (Request $request) {
-    return $request->user()
-        ->newSubscription('default', config('stripe.price_id'))
-        ->checkout();
-});
+Route::get('/checkout', [StripeController::class, 'checkout'])->name('checkout');
 
 // Ruta al billing-portal de stripe (Donde se administran las subscripciones en curso)
-Route::get('/billing-portal', function (Request $request) {
-    return $request->user()->redirectToBillingPortal();
-});
+Route::get('/billing-portal', [StripeController::class, 'billingPortal'])->name('billing-portal');
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/free-trial-end', [StripeController::class, 'freeTrialEnd'])->name('free-trial-end');
+
+// Agrupamos bajo unos mismos middlewares varias rutas
+Route::middleware(['auth','subscription'])->group(function(){
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    // Con esta única línea de código se generan todas las rutas que hemos definido arriba si y solo si queremos ceñirnos a la convección de rutas de Laravel (Ver documentación)
+    // Añadimos el middleware de autentificación para que no seamos capaces de llegar hasta el controlador ContactController
+    // sin antes estar autentificado
+    // Los nombres de los middlewares estan registrados en app/Http/Kernel.php
+    Route::middleware(['auth', 'subscription'])->resource('contacts', ContactController::class);
+});
 
 // // Devuelve la vista de contact.blade.php
 // Route::get('/contact', fn () => Response::view('contact'));
@@ -74,6 +79,5 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Route::delete('/contacts/{contact}/', [ContactController::class, 'destroy'])->name('contacts.destroy');
 // Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 
-// Con esta única línea de código se generan todas las rutas que hemos definido arriba si y solo si queremos ceñirnos a la convección de rutas de Laravel (Ver documentación)
-Route::resource('contacts', ContactController::class);
+
 

@@ -27,7 +27,8 @@
       <use xlink:href="#{{ $type }}" />
     </svg>
     <div>
-      {{ $message }}
+      {{-- '{!!  !!}' para poder renderizar html posteriormente dentro del message ver app.blade.php --}}
+      {!! $message !!}
     </div>
   </div>
 </div>
