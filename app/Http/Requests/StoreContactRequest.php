@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreContactRequest extends FormRequest
 {
@@ -30,10 +31,24 @@ class StoreContactRequest extends FormRequest
         return [
                 // Con esto conseguimos validar los datos y si hay errores volver atrás y enviar un mensaje de error automático
                 'name' => 'required',
-                'email' => 'required|email',
+                'email' => [
+                    'required',
+                    'email',
+                    // Creamos nuestra propia regla de validación
+                    Rule::unique('contacts', 'email')->where('user_id', auth()->id())
+                ],
                 'phone_number' => ['required', 'digits:9'],
                 'age' => ['required', 'numeric', 'min:1', 'max:255'],
                 'profile_picture' => 'image|nullable',
+        ];
+    }
+
+    // Con esta función sobreescribimos los mensajes por defecto que manda Laravel
+    public function messages()
+    {
+        return [
+            // Para el campo 'email' en su regla de validación 'unique'
+            'email.unique' => 'You already have a contact with this email'
         ];
     }
 }
