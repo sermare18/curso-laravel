@@ -30,7 +30,11 @@ class ContactPolicy
      */
     public function view(User $user, Contact $contact)
     {
-        return $user->id === $contact->user_id;
+        // Si no existe el contacto compartido en ese usuario devuelve null que se evalua como false
+        $contactIsSharedWithUser = $user
+            ->sharedContacts()
+            ->firstWhere('contact_id', $contact->id);
+        return $user->id === $contact->user_id || $contactIsSharedWithUser;
     }
 
     /**
