@@ -17,6 +17,7 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
+     * Si al crear un modelo no ponemos alguno no pasa nada (ese campo se pone como null), pero si intentamos poner uno que no aparece aqui da error
      *
      * @var array<int, string>
      */
