@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateContactRequest;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
@@ -103,6 +104,9 @@ class ContactController extends Controller
 
         // Otra posibilidad sin tener que incluir en $data el campo 'user_id' es: auth()->user()->contacts()->create($data)
 
+        //Ivalidamos la cache de la vista home
+        Cache::forget( "home" . auth()->id());
+
         // Enviamos mensaje flash (Ver app.blade.php)
         // En vez de put(), utilizamos el método flash() para que la información se mantenga únicamente en el siguiente request
         // session()->flash('alert', [
@@ -183,6 +187,9 @@ class ContactController extends Controller
 
         $contact->update($data);
 
+        //Ivalidamos la cache de la vista home
+        Cache::forget( "home" . auth()->id());
+
         return redirect('home')->with('alert', [
             'message' => "Contact $contact->name successfully updated",
             'type' => 'success',
@@ -205,6 +212,9 @@ class ContactController extends Controller
         }
 
         $contact->delete();
+
+        //Ivalidamos la cache de la vista home
+        Cache::forget( "home" . auth()->id());
 
         return back()->with('alert', [
             'message' => "Contact $contact->name successfully deleted",
