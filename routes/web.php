@@ -4,6 +4,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ContactShareController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\StripeController;
+use App\Http\Controllers\TokenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,7 @@ Route::middleware(['auth','subscription'])->group(function(){
     // Con el except evitamos que nos cree rutas para las funciones que hemos quitado
     Route::resource('contact-shares', ContactShareController::class)
         ->except('show', 'edit', 'update');
+    Route::resource('tokens', TokenController::class)->only(['create', 'store']);
 });
 
 // // Devuelve la vista de contact.blade.php

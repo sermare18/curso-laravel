@@ -80,6 +80,10 @@
                 <a class="nav-link" href="{{ route('contact-shares.index') }}">Shared
                   Contacts</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ route('tokens.create') }}">Generate
+                  API Token</a>
+              </li>
               <li class="nav-item dropdown">
                 <a id="navbarDropdown" class="nav-link dropdown-toggle"
                   href="#" role="button" data-bs-toggle="dropdown"
