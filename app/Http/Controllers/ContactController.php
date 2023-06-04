@@ -105,7 +105,7 @@ class ContactController extends Controller
         // Otra posibilidad sin tener que incluir en $data el campo 'user_id' es: auth()->user()->contacts()->create($data)
 
         //Ivalidamos la cache de la vista home
-        Cache::forget( "home" . auth()->id());
+        Cache::forget("home" . auth()->id());
 
         // Enviamos mensaje flash (Ver app.blade.php)
         // En vez de put(), utilizamos el método flash() para que la información se mantenga únicamente en el siguiente request
@@ -188,7 +188,7 @@ class ContactController extends Controller
         $contact->update($data);
 
         //Ivalidamos la cache de la vista home
-        Cache::forget( "home" . auth()->id());
+        Cache::forget("home" . auth()->id());
 
         return redirect('home')->with('alert', [
             'message' => "Contact $contact->name successfully updated",
@@ -214,11 +214,16 @@ class ContactController extends Controller
         $contact->delete();
 
         //Ivalidamos la cache de la vista home
-        Cache::forget( "home" . auth()->id());
+        Cache::forget("home" . auth()->id());
 
-        return back()->with('alert', [
-            'message' => "Contact $contact->name successfully deleted",
-            'type' => 'danger',
-        ]);
+        // si nos encontramos en la vista contacts/show y eliminamos un contacto si volvemos atrás nos manda un error 404 NOT FOUND
+        if (redirect()->getUrlGenerator()->previous() == route('contacts.show', $contact)) {
+            return redirect()->route('home');
+        } else {
+            return back()->with('alert', [
+                'message' => "Contact $contact->name successfully deleted",
+                'type' => 'danger',
+            ]);
+        }
     }
 }
