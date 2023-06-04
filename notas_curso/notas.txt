@@ -1,0 +1,124 @@
+Artisan es una herramienta de consola que sirve para interactuar con la aplicación
+
+Php artisan serve
+Npm run del //Para compilar los cambios de css, js, html
+Npm run Watch // Hace los mismo que el comando de arriba pero esta automatizado
+
+
+// Para correr los test
+Php artisan test --filter Ejercicio1Test
+
+// Para ejecutar las migraciones (Base de Datos)
+Php artisan migrate
+
+// Para deshacer 1 migración
+Php artisan migrate:rollback —step 1
+
+Option + SHIFT + F // Autoformateado en viscose
+
+Laravel se basa en modelo vista controlador
+
+ php artisan make:model -> Create a new Eloquent model class
+
+El comando php artisan make:model es utilizado en Laravel para generar un nuevo modelo (clase) de Eloquent. Eloquent es el ORM (Object-Relational Mapping) de Laravel, el cual permite interactuar con la base de datos utilizando objetos en lugar de SQL.
+
+El comando php artisan make:model se utiliza para crear una nueva clase de modelo en la carpeta app/Models por defecto. Esta clase de modelo representa una tabla en la base de datos y contiene propiedades y métodos para interactuar con los registros de esa tabla.
+
+En resumen, el comando php artisan make:model es utilizado en Laravel para generar un modelo de Eloquent, lo que permite interactuar con la base de datos de manera sencilla y orientada a objetos.
+
+php artisan make:controller -m Contact ContactController 
+
+Para crear un controlador en app/Http/Controllers para el modelo Contact
+
+Php artisan route:list // Nos muestra las rutas que hemos definido en nuestra aplicación
+
+Php artisan tinker //Shell para interactuar con la aplicación de Laravel
+> User::find(1)->contacts()->get() //Para interactuar con la db
+Salida:
+[!] Aliasing 'User' to 'App\Models\User' for this Tinker session.
+= Illuminate\Database\Eloquent\Collection {#4701
+    all: [
+      App\Models\Contact {#4703
+        id: 1,
+        name: "Sergio",
+        phone_number: "657654321",
+        email: "sergio.mare2002@gmail.com",
+        age: 21,
+        user_id: 1,
+        created_at: "2023-04-22 17:20:39",
+        updated_at: "2023-04-22 17:20:39",
+      },
+    ],
+  }
+> App\Models\contact::first()->user //Para interactuar con el modelo Contact
+=  App\Models\User {#4718
+    id: 1,
+    name: "Sergio",
+    email: "prueba@gmail.com",
+    email_verified_at: null,
+    #password: "$2y$10$PTxRQiskQy6JqYEtTyqnEOHz/udFdp0nGs9rwZqXi3pl1Wi5cENFW",
+    #remember_token: null,
+    created_at: "2023-03-22 22:10:11",
+    updated_at: "2023-03-22 22:10:11",
+  }
+Exit //Para salir del tinker
+
+//Para crear una política de acceso a un recurso
+Php artisan make:policy ContactPolicy —model Contact
+
+// Para crear un request
+php artisan make:request StoreContactRequest
+
+// Para crear componente de blade
+Php artisan make:component Alert
+Se crean dos archivos Alert.php dentro de app/Http/View/Components (Se encuentra el constructor del componente)
+alert.blade.php  dentro de resources/views/components (Se pega el componente)
+
+// Para crear un enlace simbólico de la carpeta storage/app/public a a la carpeta public/storage
+Php artisan storage:link
+
+Entiendo. El comando ./stripe listen --forward-to localhost:8000/stripe/webhook se utiliza para iniciar el CLI de Stripe y escuchar eventos de webhook en tu entorno local. Al ejecutar este comando, el CLI de Stripe reenviará los eventos de webhook a la URL especificada en tu aplicación de Laravel. Esto permite que tu aplicación reciba y procese eventos de webhook de Stripe en tiempo real.
+Si no estabas ejecutando este comando, es posible que tu aplicación no estuviera recibiendo eventos de webhook de Stripe, lo que podría haber causado problemas con la creación de suscripciones para nuevos usuarios. Al ejecutar el comando y escuchar eventos de webhook, deberías poder solucionar este problema y asegurarte de que las suscripciones se creen correctamente para nuevos usuarios.
+
+No, en una aplicación real no es necesario ejecutar el comando ./stripe listen --forward-to localhost:8000/stripe/webhook. Este comando se utiliza para iniciar el CLI de Stripe y escuchar eventos de webhook en tu entorno local durante el desarrollo y las pruebas. En una aplicación real, los eventos de webhook se enviarán directamente desde Stripe a la URL de webhook configurada en tu cuenta de Stripe.
+Para configurar los webhooks en una aplicación real, debes ir a tu panel de control de Stripe y crear un nuevo endpoint de webhook. Debes proporcionar la URL de tu aplicación donde deseas recibir los eventos de webhook y seleccionar los tipos de eventos que deseas recibir. Una vez que hayas configurado el endpoint de webhook, Stripe enviará los eventos a la URL especificada cada vez que ocurra un evento relevante.
+En tu aplicación, debes tener un controlador o una ruta que maneje las solicitudes entrantes a la URL de webhook y procese los eventos recibidos. Puedes consultar la documentación de Laravel y Stripe para obtener más información sobre cómo configurar y procesar webhooks en una aplicación real.
+
+// Para crear un middleware
+Php artisan make:middleware EnsureUserIsSubscribed
+
+// Para generar una clase para enviar correos (API Mailtrap)
+php artisan make:mail ContactShared
+App/Mail/ContactShared.php
+Resources/views/mail/contact-shared.blade.php
+
+// Para crear una factoría de contactos falsos (Seeders en db, para rellenar tablas automáticamente)
+Php artisan make:factory ContactFactory —model=Contact
+
+// Para rehacer toda la base de datos y borrar todo y ejecutar de nuevo 
+// todas las migraciones
+Php artisan migrate:fresh
+
+// Ejecuta el seeder que hemos creado
+Php artisan db:seed
+
+// Combina los dos comandos anteriores
+php artisan migrate:fresh --seed
+
+// Para la API de nuestra app, devuelvecolecciones de datos en formato json
+php artisan make:resource ContactResource
+
+// Para crear un test
+php artisan make:test ContactShareControllerTest  
+
+// Con las nuevas versiones de Laravel (Vite)
+npm install
+// Vite tiene únicamente 2 scripts (Ver en package.json) que son: “dev” y “build”
+// Los cambios que yo vaya haciendo, por ejemplo al css, se verán reflejados
+npm run dev (Para desarrollo)
+
+// Para cargar un archivo css en una vista blade ahora hay que cargar una nueva directiva en el bloque head:
+
+@vite(lista_de_archivos_css_que_queremos_cargar)Ejemplo: @vite([‘resources/css/app.css’])
+
+npm run build (Para producción)
